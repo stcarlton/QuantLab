@@ -1,0 +1,10 @@
+# Core
+pandas
+numpy
+pydantic
+pyyaml
+sqlalchemy
+websocket-client
+
+# Dev/Test
+pytest
