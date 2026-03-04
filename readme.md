@@ -102,27 +102,21 @@ Run tests:
 .\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider
 ```
 
-## Simple Launch
-Use one command with mode defaults:
+## Debug and Run
+Use a direct Python entrypoint:
 ```powershell
-.\launch.cmd --mode test
+$env:PYTHONPATH="src"
+.\.venv\Scripts\python.exe -m quantlab.main
 ```
 
-Live-profile loop (paper execution + Alpaca stream data):
-```powershell
-.\launch.cmd --mode live
-```
-
-Enable order submission explicitly:
-```powershell
-.\launch.cmd --mode live --submit
-```
-
-Optional: install a persistent PowerShell alias so you can run `launch` from anywhere:
-```powershell
-.\install-launch-alias.ps1
-# restart PowerShell
-launch --mode test
+For debugging/test runs, set overrides in code in `src/quantlab/main.py`:
+```python
+DEBUG_SETTINGS_OVERRIDES = {
+    # "run_loop": True,
+    # "loop_interval_seconds": 30,
+    # "loop_timeout_seconds": 0,
+    # "submit_orders": False,
+}
 ```
 
 ## Alpaca Paper Workflow

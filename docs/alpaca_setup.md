@@ -105,21 +105,19 @@ $env:QL_LOOP_INTERVAL_SECONDS="30"
 .\.venv\Scripts\python.exe -m quantlab.main
 ```
 
-## 11. Simplified launch command
-Test profile loop:
+## 11. Run the engine directly
+Single run:
 ```powershell
 $env:PYTHONPATH="src"
-.\.venv\Scripts\python.exe -m quantlab.scripts.launch --mode test
+.\.venv\Scripts\python.exe -m quantlab.main
 ```
 
-Live profile loop:
+Loop mode:
 ```powershell
 $env:PYTHONPATH="src"
-.\.venv\Scripts\python.exe -m quantlab.scripts.launch --mode live
+$env:QL_RUN_LOOP="true"
+$env:QL_LOOP_INTERVAL_SECONDS="30"
+.\.venv\Scripts\python.exe -m quantlab.main
 ```
 
-Live profile with submissions enabled:
-```powershell
-$env:PYTHONPATH="src"
-.\.venv\Scripts\python.exe -m quantlab.scripts.launch --mode live --submit
-```
+Optional: for debug/test convenience, set `DEBUG_SETTINGS_OVERRIDES` in `src/quantlab/main.py`.

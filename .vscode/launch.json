@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "QuantLab (Debug Once)",
+      "type": "python",
+      "request": "launch",
+      "module": "quantlab.main",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src",
+        "QL_RUN_LOOP": "false"
+      },
+      "justMyCode": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "QuantLab (Debug Loop)",
+      "type": "python",
+      "request": "launch",
+      "module": "quantlab.main",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src",
+        "QL_RUN_LOOP": "true",
+        "QL_LOOP_INTERVAL_SECONDS": "30"
+      },
+      "justMyCode": true,
+      "console": "integratedTerminal"
+    }
+  ]
+}

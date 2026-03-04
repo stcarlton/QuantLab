@@ -52,7 +52,7 @@ def _data_source_from_env() -> Literal["synthetic", "csv", "alpaca"]:
 
 
 def _alpaca_data_mode_from_env() -> Literal["latest", "historical", "stream"]:
-    value = os.getenv("QL_ALPACA_DATA_MODE", "latest")
+    value = os.getenv("QL_ALPACA_DATA_MODE", "historical")
     if value not in {"latest", "historical", "stream"}:
         raise ValueError("QL_ALPACA_DATA_MODE must be 'latest', 'historical', or 'stream'.")
     return value
@@ -86,8 +86,8 @@ class Settings:
     )
     alpaca_stream_wait_seconds: int = field(default_factory=lambda: int(os.getenv("QL_ALPACA_STREAM_WAIT_SECONDS", "10")))
     execution_provider: Literal["paper_stub", "alpaca_paper"] = field(default_factory=_execution_provider_from_env)
-    submit_orders: bool = field(default_factory=lambda: os.getenv("QL_SUBMIT_ORDERS", "false").lower() == "true")
-    run_loop: bool = field(default_factory=lambda: os.getenv("QL_RUN_LOOP", "false").lower() == "true")
+    submit_orders: bool = field(default_factory=lambda: os.getenv("QL_SUBMIT_ORDERS", "true").lower() == "true")
+    run_loop: bool = field(default_factory=lambda: os.getenv("QL_RUN_LOOP", "true").lower() == "true")
     loop_interval_seconds: int = field(default_factory=lambda: int(os.getenv("QL_LOOP_INTERVAL_SECONDS", "60")))
     loop_timeout_seconds: int = field(default_factory=lambda: int(os.getenv("QL_LOOP_TIMEOUT_SECONDS", "0")))
     db_path: str = field(default_factory=lambda: os.getenv("QL_DB_PATH", ".quantlab/quantlab.db"))

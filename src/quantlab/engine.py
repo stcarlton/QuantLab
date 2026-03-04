@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from quantlab.config import Settings
-from quantlab.data.loader import DataLoader
+from quantlab.data.loader import DataLoader, MissingBarDataError
 from quantlab.db.models import OrderEventRecord, PortfolioState, RebalanceRecord
 from quantlab.db.repository import Repository
 from quantlab.execution.account_reconciler import equity_from_account
@@ -146,11 +146,27 @@ class Engine:
         symbols = self.universe.select()
         all_bars = []
         latest_prices: dict[str, float] = {}
+        skipped_symbols_no_data: list[str] = []
         for symbol in symbols:
-            bars = self.data_loader.load_bars(symbol)
+            try:
+                bars = self.data_loader.load_bars(symbol)
+            except MissingBarDataError:
+                skipped_symbols_no_data.append(symbol)
+                continue
             all_bars.extend(bars)
             if bars:
                 latest_prices[symbol] = bars[-1].close
+
+        if not all_bars:
+            universe_preview = ",".join(symbols[:10])
+            if len(symbols) > 10:
+                universe_preview += ",..."
+            raise ValueError(
+                "No market bars were loaded for the selected universe. "
+                f"Attempted symbols: {universe_preview}. "
+                "If using Alpaca assets with feed=iex, switch to static universe "
+                "(e.g. QL_UNIVERSE_MODE=static, QL_SYMBOL=AAPL) or use a compatible feed."
+            )
 
         self.repository.save_market_bars(all_bars, source=self._bar_source_label())
         signals: list[Signal] = []

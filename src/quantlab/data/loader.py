@@ -12,6 +12,10 @@ from urllib import parse, request
 from quantlab.types import Bar
 
 
+class MissingBarDataError(ValueError):
+    """Raised when a symbol has no retrievable bars for the current data mode/feed."""
+
+
 class DataLoader:
     def __init__(
         self,
@@ -110,7 +114,7 @@ class DataLoader:
         )
         bars = payload.get("bars", {})
         if not isinstance(bars, dict) or symbol not in bars:
-            raise ValueError(f"No latest Alpaca bar for symbol '{symbol}'.")
+            raise MissingBarDataError(f"No latest Alpaca bar for symbol '{symbol}'.")
         row = bars[symbol]
         if not isinstance(row, dict):
             raise RuntimeError("Unexpected latest bar payload.")
@@ -133,7 +137,7 @@ class DataLoader:
         )
         rows = payload.get("bars", [])
         if not isinstance(rows, list) or not rows:
-            raise ValueError(f"No historical Alpaca bars for symbol '{symbol}'.")
+            raise MissingBarDataError(f"No historical Alpaca bars for symbol '{symbol}'.")
 
         bars: list[Bar] = []
         for row in rows:
@@ -142,7 +146,7 @@ class DataLoader:
             bars.append(self._bar_from_alpaca(symbol=symbol, payload=row))
 
         if not bars:
-            raise ValueError(f"No parseable historical Alpaca bars for symbol '{symbol}'.")
+            raise MissingBarDataError(f"No parseable historical Alpaca bars for symbol '{symbol}'.")
         return bars
 
     def _stream_worker(self, symbol: str) -> None:
@@ -280,7 +284,7 @@ class DataLoader:
                 )
 
         if not bars:
-            raise ValueError(f"No bars found in {path} for symbol '{symbol}'.")
+            raise MissingBarDataError(f"No bars found in {path} for symbol '{symbol}'.")
         return bars
 
     def load_bars(self, symbol: str) -> list[Bar]:
